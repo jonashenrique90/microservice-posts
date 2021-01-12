@@ -1,20 +1,29 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import { uuid } from 'uuidv4'
 
 const port = 4001
 const app = express()
-
-app.use(bodyParser.json())
 app.use(cors())
+app.use(bodyParser.json())
 
-const commentsByPosts = {}
+const posts: any = {}
 
-app.post('/posts/', (request, response) => {
-
+app.get('/posts', (request, response) => {
+    return response.send(posts)
 })
-app.get('/posts/', (request, response) => {
-    return response.json({message: 'Hello World 🇧🇷'})
+
+app.post('/posts', (request, response) => {
+    const id = uuid()
+    const { title } = request.body
+
+    posts[id] = {
+        id,
+        title
+    }
+    
+    return response.status(201).send(posts[id])
 })
 
 app.listen(port, () => {
